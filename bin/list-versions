@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+set -eu
+
 usage_exit() {
   echo "Usage: $(basename $0) [-H] mod_name"
   exit 1

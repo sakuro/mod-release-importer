@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+set -eu
+
 : ${MOD_PORTAL_SERVICE_USERNAME?}
 : ${MOD_PORTAL_SERVICE_TOKEN?}
 
