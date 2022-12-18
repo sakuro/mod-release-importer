@@ -1,0 +1,16 @@
+#!/bin/zsh
+
+: ${MOD_PORTAL_SERVICE_USERNAME?}
+: ${MOD_PORTAL_SERVICE_TOKEN?}
+
+download_path="$1"
+download_url="$2"
+sha1="$3"
+
+echo "Downloading ${download_path}"
+curl -sSLo "${download_path}" "${download_url}?username=${MOD_PORTAL_SERVICE_USERNAME}&token=${MOD_PORTAL_SERVICE_TOKEN}"
+
+echo "${sha1} ${download_path}" | sha1sum --check --quiet || {
+  echo "SHA1 hash mismatched against ${download_path}"
+  exit 1
+}

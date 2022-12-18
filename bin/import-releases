@@ -1,0 +1,21 @@
+#!/bin/zsh
+
+set -eu
+
+source "${0:h}/../lib/mods.zsh"
+
+PATH="${0:h}/../bin:$PATH"
+
+mod_name="$1"
+repo_name="$(repo_name "${mod_name}")"
+repo_path="${PWD}/${repo_name}"
+
+init-repo "${mod_name}" || exit 1
+
+list-versions "${mod_name}" | while read released_at version file_name download_url sha1; do
+  tmpdir="$(mktemp -d)"
+  trap "rm -rf ${tmpdir}" EXIT INT TERM HUP
+  file_path="${tmpdir}/${file_name}"
+  download-release "${file_path}" "${download_url}" "${sha1}"
+  import-release "${repo_path}" "${file_path}" "${mod_name}"  "${version}"
+done

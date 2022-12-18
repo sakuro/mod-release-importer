@@ -1,0 +1,23 @@
+#!/bin/zsh
+
+set -eu
+
+source "${0:h}/../lib/mods.zsh"
+
+mod_name="$1"
+repo_name="$(repo_name "${mod_name}")"
+repo_path="${PWD}/${repo_name}"
+
+[[ -d "${repo_path}" ]] && {
+  echo "${repo_name} exists."
+  exit 0
+}
+
+mkdir -p "${repo_path}"
+cd "${repo_path}"
+git init -b releases
+git config user.name "github-actions[bot]"
+git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+git remote add origin "https://github.com/sakuro/${repo_name}"
+#git fetch origin

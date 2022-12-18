@@ -1,0 +1,26 @@
+#!/bin/zsh
+
+usage_exit() {
+  echo "Usage: $(basename $0) [-H] mod_name"
+  exit 1
+}
+
+typeset -A opts
+zparseopts -D -A opts H
+[[ $? = 0 ]] || usage_exit
+
+header=false
+[[ -n $opts[(i)-H] ]] && header=true
+
+mod_name="$1"
+shift
+
+[[ -n "$mod_name" ]] || {
+  echo "No mod_name given"
+  usage_exit
+}
+
+$header && echo "released_at\tversion\tfile_name\tdownload_url\tsha1"
+
+curl -s "https://mods.factorio.com/api/mods/${mod_name}" | \
+jq -rM '.releases | sort_by(.released_at) | .[] | [.released_at, .version, .file_name, "https://mods.factorio.com"+.download_url, .sha1] | @tsv'

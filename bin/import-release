@@ -1,0 +1,25 @@
+#!/bin/zsh
+
+repo_path="$1"
+file_path="$2"
+mod_name="$3"
+version="$4"
+tag="v${version}"
+
+unzip -d "${file_path:h}" "${file_path}"
+tar cf - -C "${file_path:h}/${mod_name}_${version}" . | (
+  cd "${repo_path}"
+  git tag -l | grep -q "${tag}" && exit 0
+
+  [[ "$(git ls-files)" = "" ]] || {
+    git ls-files | xargs rm -f
+    git clean -fd
+  }
+
+  tar xf -
+  chmod 755 **/*(/)
+  chmod 644 **/*(.)
+  git add .
+  git commit -m "Version $version"
+  git tag "${tag}"
+)
