@@ -11,6 +11,7 @@ repo_name="$(repo_name "${mod_name}")"
 repo_path="${PWD}/${repo_name}"
 
 init-repo "${mod_name}" || exit 1
+[[ "$(git symbolic-ref --short HEAD)" = releases ]] || exit 1
 
 list-versions "${mod_name}" | while read released_at version file_name download_url sha1; do
   (cd "${repo_path}";  git tag) | grep -qxF "v${version}" && {
